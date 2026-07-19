@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Tickets | AssetFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  :root { --sidebar-w: 240px; --topbar-h: 64px; }
+  body { background: var(--slate-100); }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--navy-900); display: flex; flex-direction: column; z-index: 20; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand-icon { width: 32px; height: 32px; border-radius: 7px; background: var(--amber-500); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; color: var(--navy-900); font-size: 14px; }
+  .sidebar-brand-text { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--white); }
+  .sidebar-brand-text span { color: var(--amber-400); }
+  .sidebar-section-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E7BA3; padding: 20px 22px 8px; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 22px; color: #B8C6DB; text-decoration: none; font-size: 13.5px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--white); }
+  .nav-item.active { background: rgba(242,169,0,0.1); color: var(--amber-400); border-left-color: var(--amber-500); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+  .sidebar-footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-300); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-footer-name { color: var(--white); font-size: 13px; font-weight: 500; }
+  .sidebar-footer-role { color: #7F94B3; font-size: 11.5px; }
+
+  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10; }
+  .topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--slate-900); }
+  .topbar-meta { font-family: var(--font-mono); font-size: 11.5px; color: #98A4B3; margin-top: 2px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--slate-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--slate-600); position: relative; }
+  .icon-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--amber-500); border: 1.5px solid var(--white); }
+
+  .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 28px; min-height: calc(100vh - var(--topbar-h)); }
+  .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; }
+  .page-header h1 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .page-header p { font-size: 13.5px; color: var(--slate-600); }
+
+  .toolbar { display: flex; gap: 12px; margin-bottom: 18px; align-items: center; }
+  .filter-select { padding: 10px 14px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-size: 13.5px; background: var(--white); color: var(--slate-600); }
+
+  .table-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--slate-600); padding: 14px 20px; background: var(--slate-100); border-bottom: 1px solid var(--slate-200); }
+  tbody td { padding: 15px 20px; font-size: 13.5px; color: var(--slate-900); border-bottom: 1px solid var(--slate-200); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #FAFBFC; }
+  .asset-id { font-family: var(--font-mono); font-weight: 500; color: var(--navy-700); }
+  .asset-name { font-weight: 500; }
+  .asset-sub { font-size: 12px; color: var(--slate-600); }
+
+  .priority { display: flex; align-items: center; gap: 7px; font-size: 13px; }
+  .priority-bar { width: 3px; height: 16px; border-radius: 2px; }
+  .priority-low .priority-bar { background: #94A3B8; }
+  .priority-medium .priority-bar { background: #378ADD; }
+  .priority-high .priority-bar { background: #EF9F27; }
+  .priority-critical .priority-bar { background: #E24B4A; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-open { background: #EEF0F3; color: #475467; }
+  .badge-open .badge-dot { background: #94A3B8; }
+  .badge-progress { background: #FAEEDA; color: #633806; }
+  .badge-progress .badge-dot { background: #EF9F27; }
+  .badge-resolved { background: #EAF3DE; color: #27500A; }
+  .badge-resolved .badge-dot { background: #639922; }
+  .badge-closed { background: #E9EBEF; color: #52606D; }
+  .badge-closed .badge-dot { background: #64748B; }
+
+  .btn-view { padding: 7px 14px; font-size: 12.5px; border-radius: 6px; border: 1px solid var(--slate-200); background: var(--white); color: var(--navy-700); font-weight: 500; }
+  .btn-view:hover { border-color: var(--navy-300); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">AF</div>
+    <div class="sidebar-brand-text">Asset<span>Flow</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <div class="sidebar-section-label">My workspace</div>
+    <a href="assets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      My Assets
+    </a>
+    <a href="tickets.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5A2.5 2.5 0 015.5 6h13A2.5 2.5 0 0121 8.5v1.7a2 2 0 000 3.6v1.7a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 15.5v-1.7a2 2 0 000-3.6z"/></svg>
+      My Tickets
+    </a>
+    <a href="raise-ticket.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+      Raise Ticket
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="avatar" id="userAvatar">--</div>
+    <div>
+      <div class="sidebar-footer-name" id="userName">Loading...</div>
+      <div class="sidebar-footer-role">Employee</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div>
+    <div class="topbar-title">My Tickets</div>
+    <div class="topbar-meta">BHEL Haridwar · IT Department</div>
+  </div>
+  <div style="display:flex; gap:12px;">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <span class="icon-dot"></span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <h1>My Tickets</h1>
+      <p>Support tickets you've raised and their current status.</p>
+    </div>
+    <a href="raise-ticket.html"><button class="btn-primary">+ Raise a new ticket</button></a>
+  </div>
+
+  <div class="toolbar">
+    <select class="filter-select">
+      <option>All statuses</option>
+      <option>Open</option>
+      <option>In progress</option>
+      <option>Resolved</option>
+      <option>Closed</option>
+    </select>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticket ID</th>
+          <th>Subject</th>
+          <th>Priority</th>
+          <th>Raised on</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="ticketsTableBody">
+        <tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--slate-600);">Loading tickets...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  const token = localStorage.getItem('token');
+  const userName = localStorage.getItem('name') || 'Employee';
+  if (!token) {
+    window.location.href = '../login.html';
+  }
+
+  document.getElementById('userName').textContent = userName;
+  document.getElementById('userAvatar').textContent = userName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+  const statusClassMap = {
+    'Open': 'badge-open',
+    'In Progress': 'badge-progress',
+    'Resolved': 'badge-resolved',
+    'Closed': 'badge-closed'
+  };
+
+  const priorityClassMap = {
+    'Low': 'priority-low',
+    'Medium': 'priority-medium',
+    'High': 'priority-high',
+    'Critical': 'priority-critical'
+  };
+
+  function formatDate(dateString) {
+    const d = new Date(dateString);
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  async function loadTickets() {
+    const tbody = document.getElementById('ticketsTableBody');
+    try {
+      const response = await fetch('http://localhost:5001/api/tickets/mine', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      const tickets = await response.json();
+
+      if (!response.ok) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--danger);">Could not load tickets.</td></tr>`;
+        return;
+      }
+
+      if (tickets.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--slate-600);">No tickets raised yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = tickets.map(ticket => {
+        const statusClass = statusClassMap[ticket.status] || 'badge-open';
+        const priorityClass = priorityClassMap[ticket.priority] || 'priority-medium';
+
+        return `
+          <tr>
+            <td class="asset-id">TKT-${ticket.ticket_id}</td>
+            <td>
+              <div class="asset-name">${ticket.title}</div>
+              <div class="asset-sub">${ticket.description ? ticket.description.slice(0, 40) : 'No description'}</div>
+            </td>
+            <td><div class="priority ${priorityClass}"><span class="priority-bar"></span>${ticket.priority}</div></td>
+            <td>${formatDate(ticket.created_at)}</td>
+            <td><span class="badge ${statusClass}"><span class="badge-dot"></span>${ticket.status}</span></td>
+            <td><button class="btn-view" onclick="window.location.href='ticket-details.html?id=${ticket.ticket_id}'">View</button></td>
+          </tr>
+        `;
+      }).join('');
+
+    } catch (error) {
+      console.error('Load tickets error:', error);
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--danger);">Could not connect to the server.</td></tr>`;
+    }
+  }
+
+  loadTickets();
+</script>
+
+</body>
+</html>

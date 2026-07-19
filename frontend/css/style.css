@@ -1,0 +1,101 @@
+/* ==========================================================================
+   AssetFlow — Global Styles
+   This file holds the design system: colors, fonts, and resets.
+   Every page in the project links to this file so the whole app
+   looks consistent without repeating this code everywhere.
+   ========================================================================== */
+
+/* ---------- Design tokens (change once here, updates everywhere) ---------- */
+:root {
+  --navy-900: #081B33;
+  --navy-700: #0F2A4A;
+  --navy-500: #1B3A63;
+  --navy-300: #2E5286;
+
+  --amber-500: #F2A900;
+  --amber-400: #FFC233;
+
+  --slate-100: #F4F6F9;
+  --slate-200: #E4E9EF;
+  --slate-300: #CBD3DC;
+  --slate-600: #52606D;
+  --slate-900: #16202B;
+
+  --white: #FFFFFF;
+
+  --success: #16A34A;
+  --danger: #DC2626;
+  --warning: #F2A900;
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ---------- Reset (removes browser default spacing/quirks) ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--slate-900);
+  background: var(--slate-100);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+}
+
+/* ---------- Shared typography helpers ---------- */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--slate-900);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ---------- Shared button styles (reused across every page) ---------- */
+.btn-primary {
+  padding: 12px 20px;
+  background: var(--navy-700);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: var(--navy-500);
+}
+
+.btn-secondary {
+  padding: 12px 20px;
+  background: var(--white);
+  color: var(--navy-700);
+  border: 1.5px solid var(--slate-200);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--navy-300);
+}

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AssetFlow | Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .screen {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- LEFT PANEL: BRAND ---------- */
+  .brand-panel {
+    background: linear-gradient(160deg, var(--navy-900) 0%, var(--navy-700) 55%, var(--navy-500) 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px 56px;
+    color: var(--white);
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 2;
+  }
+
+  .brand-mark-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--amber-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--navy-900);
+    font-size: 18px;
+  }
+
+  .brand-mark-text {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-mark-text span { color: var(--amber-400); }
+
+  .brand-copy {
+    z-index: 2;
+    max-width: 440px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber-400);
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .brand-copy h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 42px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+
+  .brand-copy p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #C3D0E0;
+    max-width: 380px;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 36px;
+    margin-top: 36px;
+    z-index: 2;
+  }
+
+  .stat-row div { display: flex; flex-direction: column; gap: 4px; }
+
+  .stat-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--amber-400);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: #8FA3BF;
+  }
+
+  .brand-footer {
+    z-index: 2;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #6E85A3;
+    letter-spacing: 0.04em;
+  }
+
+  /* Network animation */
+  .network-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.55;
+  }
+
+  /* ---------- RIGHT PANEL: FORM ---------- */
+  .form-panel {
+    background: var(--slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .form-card {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .form-card h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 26px;
+    margin-bottom: 6px;
+    color: var(--navy-900);
+  }
+
+  .form-card > p {
+    font-size: 14px;
+    color: var(--slate-600);
+    margin-bottom: 28px;
+  }
+
+  .role-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background: var(--slate-200);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .role-tab {
+    border: none;
+    background: transparent;
+    padding: 9px 0;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate-600);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .role-tab.active {
+    background: var(--navy-700);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(15,42,74,0.25);
+  }
+
+  .field { margin-bottom: 18px; }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--slate-900);
+    margin-bottom: 7px;
+    letter-spacing: 0.01em;
+  }
+
+  .field input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--slate-200);
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    background: var(--white);
+    color: var(--slate-900);
+    transition: border-color 0.15s ease;
+  }
+
+  .field input::placeholder { color: #A3AEBB; }
+
+  .field input:focus {
+    outline: none;
+    border-color: var(--navy-500);
+    box-shadow: 0 0 0 3px rgba(27,58,99,0.12);
+  }
+
+  .field-id-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #98A4B3;
+    margin-top: 6px;
+  }
+
+  .form-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: -2px 0 22px;
+    font-size: 13px;
+  }
+
+  .form-meta a {
+    color: var(--navy-500);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--slate-600);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 13px 0;
+    background: var(--navy-700);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover { background: var(--navy-500); }
+
+  .btn-primary .arrow { transition: transform 0.15s ease; }
+  .btn-primary:hover .arrow { transform: translateX(3px); }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 12.5px;
+    color: var(--slate-600);
+  }
+
+  .form-footer span { font-family: var(--font-mono); color: #98A4B3; }
+
+  @media (max-width: 860px) {
+    .screen { grid-template-columns: 1fr; }
+    .brand-panel { min-height: 280px; padding: 32px; }
+    .brand-copy h1 { font-size: 30px; }
+    .stat-row { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .network-canvas { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="screen">
+
+  <!-- LEFT: BRAND PANEL -->
+  <div class="brand-panel">
+    <canvas class="network-canvas" id="netCanvas"></canvas>
+
+    <div class="brand-mark">
+      <div class="brand-mark-icon">AF</div>
+      <div class="brand-mark-text">Asset<span>Flow</span></div>
+    </div>
+
+    <div class="brand-copy">
+      <span class="eyebrow">Enterprise IT Asset &amp; Help Desk</span>
+      <h1>Every asset tracked.<br>Every ticket resolved.</h1>
+      <p>One system for inventory, assignment, and support — built for teams that can't afford to lose track of a single device.</p>
+
+      <div class="stat-row">
+        <div>
+          <span class="stat-num">1,240+</span>
+          <span class="stat-label">Assets tracked</span>
+        </div>
+        <div>
+          <span class="stat-num">98.2%</span>
+          <span class="stat-label">Tickets resolved</span>
+        </div>
+        <div>
+          <span class="stat-num">3</span>
+          <span class="stat-label">Role types</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="brand-footer">SYSTEM STATUS: ONLINE &nbsp;·&nbsp; v1.0.0</div>
+  </div>
+
+  <!-- RIGHT: FORM PANEL -->
+  <div class="form-panel">
+    <div class="form-card">
+      <h2>Welcome back</h2>
+      <p>Sign in to access your dashboard.</p>
+
+      <div class="role-tabs">
+        <button class="role-tab active" data-role="employee">Employee</button>
+        <button class="role-tab" data-role="engineer">IT Engineer</button>
+        <button class="role-tab" data-role="admin">Admin</button>
+      </div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="empId">Employee ID</label>
+          <input type="text" id="empId" placeholder="e.g. BHEL-EMP-0452" autocomplete="username">
+          <div class="field-id-hint">Format: BHEL-EMP-XXXX</div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+        </div>
+
+        <div class="form-meta">
+          <label class="remember">
+            <input type="checkbox" id="remember" style="width:14px;height:14px;">
+            Remember me
+          </label>
+          <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Sign in <span class="arrow">→</span>
+        </button>
+      </form>
+
+      <div class="form-footer">
+        Need access? Contact your <span>IT Admin</span> to get an account created.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Role tab switching
+  document.querySelectorAll('.role-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const role = tab.dataset.role;
+      const empIdLabel = document.querySelector('label[for="empId"]');
+      const empIdInput = document.getElementById('empId');
+      if (role === 'admin') {
+        empIdLabel.textContent = 'Admin ID';
+        empIdInput.placeholder = 'e.g. BHEL-ADM-0012';
+      } else if (role === 'engineer') {
+        empIdLabel.textContent = 'Engineer ID';
+        empIdInput.placeholder = 'e.g. BHEL-ENG-0087';
+      } else {
+        empIdLabel.textContent = 'Employee ID';
+        empIdInput.placeholder = 'e.g. BHEL-EMP-0452';
+      }
+    });
+  });
+
+  
+  // Real login handler — connects to backend
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const employeeId = document.getElementById('empId').value.trim();
+  const password = document.getElementById('password').value;
+  const activeTab = document.querySelector('.role-tab.active');
+  const roleMap = {
+    employee: 'Employee',
+    engineer: 'IT Engineer',
+    admin: 'Admin'
+  };
+  const role = roleMap[activeTab.dataset.role];
+  if (!employeeId || !password) {
+    alert('Please enter both Employee ID and Password.');
+    return;
+  }
+  const submitBtn = document.querySelector('.btn-primary');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = 'Signing in...';
+  try {
+    const response = await fetch('http://localhost:5001/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ employeeId, password, role })
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      alert(data.message || 'Login failed. Please check your credentials.');
+      return;
+    }
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('role', data.role);
+    localStorage.setItem('name', data.name);
+    if (data.role === 'Admin') {
+      window.location.href = 'admin/dashboard.html';
+    } else if (data.role === 'IT Engineer') {
+      window.location.href = 'engineer/dashboard.html';
+    } else {
+      window.location.href = 'employee/dashboard.html';
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    alert('Could not connect to the server. Make sure the backend is running.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = originalText;
+  }
+});
+
+  // Signature element: animated node network representing assets/tickets flowing
+  const canvas = document.getElementById('netCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, nodes;
+
+  function resize() {
+    const panel = canvas.parentElement;
+    w = canvas.width = panel.offsetWidth;
+    h = canvas.height = panel.offsetHeight;
+  }
+
+  function initNodes() {
+    nodes = [];
+    const count = Math.floor((w * h) / 26000);
+    for (let i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        r: Math.random() * 1.5 + 1,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const maxDist = 150;
+
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i];
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
+      n.pulse += 0.02;
+
+      for (let j = i + 1; j < nodes.length; j++) {
+        const m = nodes[j];
+        const dx = n.x - m.x, dy = n.y - m.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < maxDist) {
+          ctx.strokeStyle = `rgba(242,169,0,${(1 - dist / maxDist) * 0.18})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(m.x, m.y);
+          ctx.stroke();
+        }
+      }
+
+      const glow = (Math.sin(n.pulse) + 1) / 2;
+      ctx.fillStyle = `rgba(255,194,51,${0.3 + glow * 0.4})`;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); initNodes(); });
+  resize();
+  initNodes();
+  draw();
+</script>
+
+</body>
+</html>

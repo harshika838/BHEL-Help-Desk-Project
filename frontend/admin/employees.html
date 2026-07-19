@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employees | AssetFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  :root {
+    --sidebar-w: 240px;
+    --topbar-h: 64px;
+  }
+
+  body { background: var(--slate-100); }
+
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--navy-900);
+    display: flex; flex-direction: column;
+    z-index: 20;
+  }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand-icon { width: 32px; height: 32px; border-radius: 7px; background: var(--amber-500); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; color: var(--navy-900); font-size: 14px; }
+  .sidebar-brand-text { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--white); }
+  .sidebar-brand-text span { color: var(--amber-400); }
+  .sidebar-section-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E7BA3; padding: 20px 22px 8px; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 22px; color: #B8C6DB; text-decoration: none; font-size: 13.5px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--white); }
+  .nav-item.active { background: rgba(242,169,0,0.1); color: var(--amber-400); border-left-color: var(--amber-500); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: var(--white); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; padding: 1px 6px; border-radius: 10px; }
+  .sidebar-footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-300); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-footer-name { color: var(--white); font-size: 13px; font-weight: 500; }
+  .sidebar-footer-role { color: #7F94B3; font-size: 11.5px; }
+
+  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10; }
+  .topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--slate-900); }
+  .topbar-meta { font-family: var(--font-mono); font-size: 11.5px; color: #98A4B3; margin-top: 2px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--slate-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--slate-600); position: relative; }
+  .icon-btn:hover { border-color: var(--navy-300); color: var(--navy-700); }
+  .icon-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--amber-500); border: 1.5px solid var(--white); }
+
+  .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 28px; min-height: calc(100vh - var(--topbar-h)); }
+  .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; }
+  .page-header h1 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .page-header p { font-size: 13.5px; color: var(--slate-600); }
+
+  .toolbar { display: flex; gap: 12px; margin-bottom: 18px; align-items: center; }
+  .search-input { flex: 1; max-width: 320px; padding: 10px 14px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-size: 13.5px; background: var(--white); }
+  .search-input:focus { outline: none; border-color: var(--navy-500); }
+  .filter-select { padding: 10px 14px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-size: 13.5px; background: var(--white); color: var(--slate-600); }
+  .btn-add { margin-left: auto; }
+
+  .table-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: var(--slate-600); padding: 14px 20px; background: var(--slate-100); border-bottom: 1px solid var(--slate-200); }
+  tbody td { padding: 14px 20px; font-size: 13.5px; color: var(--slate-900); border-bottom: 1px solid var(--slate-200); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #FAFBFC; }
+  .asset-id { font-family: var(--font-mono); font-weight: 500; color: var(--navy-700); }
+  .asset-name { font-weight: 500; }
+  .asset-sub { font-size: 12px; color: var(--slate-600); }
+
+  .emp-cell { display: flex; align-items: center; gap: 10px; }
+  .emp-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-500); color: var(--white); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-active { background: #EAF3DE; color: #27500A; }
+  .badge-active .badge-dot { background: #639922; }
+  .badge-inactive { background: #F1F2F4; color: #52606D; }
+  .badge-inactive .badge-dot { background: #98A4B3; }
+
+  .row-actions { display: flex; gap: 8px; }
+  .row-actions button { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--slate-200); background: var(--white); color: var(--slate-600); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .row-actions button:hover { border-color: var(--navy-300); color: var(--navy-700); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(8,27,51,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--white); border-radius: 14px; width: 100%; max-width: 440px; padding: 28px; }
+  .modal h2 { font-family: var(--font-display); font-weight: 600; font-size: 18px; margin-bottom: 4px; }
+  .modal p.sub { font-size: 13px; color: var(--slate-600); margin-bottom: 22px; }
+  .modal .field { margin-bottom: 16px; }
+  .modal .field label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+  .modal .field input, .modal .field select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--slate-200); border-radius: 8px; font-size: 13.5px; font-family: var(--font-body); }
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .modal-actions .btn-secondary, .modal-actions .btn-primary { flex: 1; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">AF</div>
+    <div class="sidebar-brand-text">Asset<span>Flow</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+
+    <div class="sidebar-section-label">Manage</div>
+    <a href="employees.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 13.6c2.9.3 5 2.6 5 5.9"/></svg>
+      Employees
+    </a>
+    <a href="assets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      Assets
+    </a>
+    <a href="tickets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5A2.5 2.5 0 015.5 6h13A2.5 2.5 0 0121 8.5v1.7a2 2 0 000 3.6v1.7a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 15.5v-1.7a2 2 0 000-3.6z"/></svg>
+      Tickets
+    </a>
+    <a href="reports.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      Reports
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar" id="userAvatar">--</div>
+    <div>
+      <div class="sidebar-footer-name" id="userName">Loading...</div>
+      <div class="sidebar-footer-role">Administrator</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div>
+    <div class="topbar-title">Employees</div>
+    <div class="topbar-meta">BHEL Haridwar</div>
+  </div>
+  <div style="display:flex; gap:12px;">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <span class="icon-dot"></span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <h1>Employees</h1>
+      <p>Manage employee accounts and roles.</p>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" class="search-input" placeholder="Search by name or employee ID...">
+    <select class="filter-select">
+      <option>All departments</option>
+      <option>IT</option>
+      <option>Operations</option>
+      <option>Finance</option>
+      <option>HR</option>
+      <option>Administration</option>
+    </select>
+    <button class="btn-primary btn-add" onclick="openModal()">+ Add employee</button>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="employeesTableBody">
+        <tr><td colspan="6" style="text-align:center; padding: 30px; color: var(--slate-600);">Loading employees...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Add new employee</h2>
+    <p class="sub">Create a profile for a new employee.</p>
+
+    <form id="addEmployeeForm">
+      <div class="field">
+        <label for="empId">Employee ID</label>
+        <input type="text" id="empId" placeholder="e.g. EMP002">
+      </div>
+      <div class="field">
+        <label for="empName">Full name</label>
+        <input type="text" id="empName" placeholder="e.g. Erica Fernandes">
+      </div>
+      <div class="field">
+        <label for="empEmail">Email</label>
+        <input type="email" id="empEmail" placeholder="e.g. erica.f@bhel.in">
+      </div>
+      <div class="field">
+        <label for="empPassword">Password</label>
+        <input type="password" id="empPassword" placeholder="Set a temporary password">
+      </div>
+      <div class="field">
+        <label for="empRole">Role</label>
+        <select id="empRole">
+          <option value="Employee">Employee</option>
+          <option value="IT Engineer">IT Engineer</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="empDept">Department</label>
+        <select id="empDept">
+          <option>IT</option>
+          <option>Operations</option>
+          <option>Finance</option>
+          <option>HR</option>
+          <option>Administration</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-primary">Add employee</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const token = localStorage.getItem('token');
+  const userName = localStorage.getItem('name') || 'Admin';
+  if (!token) {
+    window.location.href = '../login.html';
+  }
+
+  document.getElementById('userName').textContent = userName;
+  document.getElementById('userAvatar').textContent = userName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+
+  function initials(name) {
+    return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  async function loadEmployees() {
+    const tbody = document.getElementById('employeesTableBody');
+    try {
+      const response = await fetch('http://localhost:5001/api/employees', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const employees = await response.json();
+
+      if (!response.ok) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--danger);">Could not load employees.</td></tr>`;
+        return;
+      }
+
+      if (employees.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--slate-600);">No employees found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = employees.map(emp => {
+        const statusClass = emp.status === 'Active' ? 'badge-active' : 'badge-inactive';
+        return `
+          <tr>
+            <td class="asset-id">${emp.employee_id}</td>
+            <td>
+              <div class="emp-cell">
+                <div class="emp-avatar">${initials(emp.full_name)}</div>
+                <div>
+                  <div class="asset-name">${emp.full_name}</div>
+                  <div class="asset-sub">${emp.email}</div>
+                </div>
+              </div>
+            </td>
+            <td>${emp.department || '—'}</td>
+            <td>${emp.role_name}</td>
+            <td><span class="badge ${statusClass}"><span class="badge-dot"></span>${emp.status}</span></td>
+            <td>
+              <div class="row-actions">
+                <button aria-label="Edit"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+    } catch (error) {
+      console.error('Load employees error:', error);
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--danger);">Could not connect to the server.</td></tr>`;
+    }
+  }
+
+  document.getElementById('addEmployeeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const employeeId = document.getElementById('empId').value.trim();
+    const fullName = document.getElementById('empName').value.trim();
+    const email = document.getElementById('empEmail').value.trim();
+    const password = document.getElementById('empPassword').value;
+    const role = document.getElementById('empRole').value;
+    const department = document.getElementById('empDept').value;
+
+    if (!employeeId || !fullName || !email || !password) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5001/api/employees', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ employeeId, fullName, email, password, role, department })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || 'Could not add employee.');
+        return;
+      }
+
+      alert('Employee added successfully!');
+      closeModal();
+      loadEmployees();
+
+    } catch (error) {
+      console.error('Add employee error:', error);
+      alert('Could not connect to the server.');
+    }
+  });
+
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modalOverlay') closeModal();
+  });
+
+  loadEmployees();
+</script>
+
+</body>
+</html>

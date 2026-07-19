@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports | AssetFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root { --sidebar-w: 240px; --topbar-h: 64px; }
+  body { background: var(--slate-100); }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--navy-900); display: flex; flex-direction: column; z-index: 20; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand-icon { width: 32px; height: 32px; border-radius: 7px; background: var(--amber-500); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; color: var(--navy-900); font-size: 14px; }
+  .sidebar-brand-text { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--white); }
+  .sidebar-brand-text span { color: var(--amber-400); }
+  .sidebar-section-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E7BA3; padding: 20px 22px 8px; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 22px; color: #B8C6DB; text-decoration: none; font-size: 13.5px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--white); }
+  .nav-item.active { background: rgba(242,169,0,0.1); color: var(--amber-400); border-left-color: var(--amber-500); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: var(--white); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; padding: 1px 6px; border-radius: 10px; }
+  .sidebar-footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-300); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-footer-name { color: var(--white); font-size: 13px; font-weight: 500; }
+  .sidebar-footer-role { color: #7F94B3; font-size: 11.5px; }
+
+  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10; }
+  .topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--slate-900); }
+  .topbar-meta { font-family: var(--font-mono); font-size: 11.5px; color: #98A4B3; margin-top: 2px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--slate-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--slate-600); position: relative; }
+  .icon-btn:hover { border-color: var(--navy-300); color: var(--navy-700); }
+  .icon-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--amber-500); border: 1.5px solid var(--white); }
+
+  .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 28px; min-height: calc(100vh - var(--topbar-h)); }
+  .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 22px; }
+  .page-header h1 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .page-header p { font-size: 13.5px; color: var(--slate-600); }
+
+  .export-buttons { display: flex; gap: 10px; }
+  .btn-export { display: flex; align-items: center; gap: 7px; }
+
+  .charts-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .chart-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 20px; }
+  .chart-card h3 { font-family: var(--font-display); font-weight: 600; font-size: 14.5px; margin-bottom: 2px; }
+  .chart-card p { font-size: 12px; color: var(--slate-600); margin-bottom: 16px; }
+  .chart-wrap { position: relative; height: 240px; }
+
+  .charts-grid-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  @media (max-width: 1000px) {
+    .charts-grid, .charts-grid-bottom { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">AF</div>
+    <div class="sidebar-brand-text">Asset<span>Flow</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <div class="sidebar-section-label">Manage</div>
+    <a href="employees.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 13.6c2.9.3 5 2.6 5 5.9"/></svg>
+      Employees
+    </a>
+    <a href="assets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      Assets
+    </a>
+    <a href="tickets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5A2.5 2.5 0 015.5 6h13A2.5 2.5 0 0121 8.5v1.7a2 2 0 000 3.6v1.7a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 15.5v-1.7a2 2 0 000-3.6z"/></svg>
+      Tickets
+      <span class="nav-badge">12</span>
+    </a>
+    <a href="reports.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      Reports
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="avatar">RA</div>
+    <div>
+      <div class="sidebar-footer-name">R. Admin</div>
+      <div class="sidebar-footer-role">Administrator</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div>
+    <div class="topbar-title">Reports</div>
+    <div class="topbar-meta">BHEL Haridwar</div>
+  </div>
+  <div style="display:flex; gap:12px;">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <span class="icon-dot"></span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <h1>Analytics & Reports</h1>
+      <p>Monthly overview of assets and ticket activity.</p>
+    </div>
+    <div class="export-buttons">
+      <button class="btn-secondary btn-export" onclick="alert('Export logic connects to backend later — will generate a real PDF.')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 001 1h4M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z"/></svg>
+        Export PDF
+      </button>
+      <button class="btn-secondary btn-export" onclick="alert('Export logic connects to backend later — will generate a real Excel file.')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+        Export Excel
+      </button>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Tickets raised per month</h3>
+      <p>Last 6 months</p>
+      <div class="chart-wrap"><canvas id="ticketsTrendChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Asset distribution</h3>
+      <p>By category</p>
+      <div class="chart-wrap"><canvas id="assetDistChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-grid-bottom">
+    <div class="chart-card">
+      <h3>Ticket status breakdown</h3>
+      <p>Current snapshot</p>
+      <div class="chart-wrap"><canvas id="statusChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Engineer performance</h3>
+      <p>Tickets resolved this month</p>
+      <div class="chart-wrap"><canvas id="engineerChart"></canvas></div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // Shared color tokens (kept in sync with css/style.css design system)
+  const navy = '#0F2A4A';
+  const amber = '#F2A900';
+  const slate = '#94A3B8';
+  const blue = '#378ADD';
+  const green = '#639922';
+  const orange = '#EF9F27';
+  const red = '#E24B4A';
+
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#52606D';
+
+  // 1. Tickets raised per month — line chart
+  new Chart(document.getElementById('ticketsTrendChart'), {
+    type: 'line',
+    data: {
+      labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+      datasets: [{
+        label: 'Tickets raised',
+        data: [28, 34, 25, 40, 37, 45],
+        borderColor: navy,
+        backgroundColor: 'rgba(15,42,74,0.08)',
+        fill: true,
+        tension: 0.35,
+        pointBackgroundColor: amber,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, grid: { color: '#E4E9EF' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // 2. Asset distribution — doughnut chart
+  new Chart(document.getElementById('assetDistChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Laptops', 'Desktops', 'Printers', 'Monitors', 'Routers'],
+      datasets: [{
+        data: [420, 310, 95, 280, 60],
+        backgroundColor: [navy, blue, amber, '#2E5286', slate],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 14 } } },
+      cutout: '65%'
+    }
+  });
+
+  // 3. Ticket status breakdown — bar chart
+  new Chart(document.getElementById('statusChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Open', 'Assigned', 'In progress', 'Resolved', 'Closed'],
+      datasets: [{
+        data: [8, 4, 6, 15, 42],
+        backgroundColor: [slate, blue, orange, green, '#64748B'],
+        borderRadius: 6,
+        maxBarThickness: 40
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, grid: { color: '#E4E9EF' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // 4. Engineer performance — horizontal bar chart
+  new Chart(document.getElementById('engineerChart'), {
+    type: 'bar',
+    data: {
+      labels: ['V. Singh', 'A. Mehta', 'K. Rawat', 'S. Bisht'],
+      datasets: [{
+        label: 'Resolved',
+        data: [18, 15, 11, 9],
+        backgroundColor: amber,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { x: { beginAtZero: true, grid: { color: '#E4E9EF' } }, y: { grid: { display: false } } }
+    }
+  });
+</script>
+
+</body>
+</html>

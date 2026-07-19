@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAP-1001 | AssetFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  :root { --sidebar-w: 240px; --topbar-h: 64px; }
+  body { background: var(--slate-100); }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--navy-900); display: flex; flex-direction: column; z-index: 20; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand-icon { width: 32px; height: 32px; border-radius: 7px; background: var(--amber-500); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; color: var(--navy-900); font-size: 14px; }
+  .sidebar-brand-text { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--white); }
+  .sidebar-brand-text span { color: var(--amber-400); }
+  .sidebar-section-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E7BA3; padding: 20px 22px 8px; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 22px; color: #B8C6DB; text-decoration: none; font-size: 13.5px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--white); }
+  .nav-item.active { background: rgba(242,169,0,0.1); color: var(--amber-400); border-left-color: var(--amber-500); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: var(--white); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; padding: 1px 6px; border-radius: 10px; }
+  .sidebar-footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-300); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-footer-name { color: var(--white); font-size: 13px; font-weight: 500; }
+  .sidebar-footer-role { color: #7F94B3; font-size: 11.5px; }
+
+  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10; }
+  .topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--slate-900); }
+  .topbar-meta { font-family: var(--font-mono); font-size: 11.5px; color: #98A4B3; margin-top: 2px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--slate-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--slate-600); position: relative; }
+  .icon-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--amber-500); border: 1.5px solid var(--white); }
+
+  .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 28px; min-height: calc(100vh - var(--topbar-h)); }
+
+  .back-link { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--slate-600); text-decoration: none; margin-bottom: 16px; font-weight: 500; }
+  .back-link:hover { color: var(--navy-700); }
+
+  .asset-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 22px; }
+  .asset-header-left { display: flex; gap: 16px; align-items: center; }
+  .asset-icon-lg { width: 56px; height: 56px; border-radius: 12px; background: var(--navy-700); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .asset-header h1 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin-bottom: 4px; }
+  .asset-meta-line { font-size: 12.5px; color: var(--slate-600); }
+  .asset-meta-line .mono { font-family: var(--font-mono); color: var(--navy-700); font-weight: 500; }
+  .header-actions { display: flex; gap: 10px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-assigned { background: #E6F1FB; color: #0C447C; }
+  .badge-assigned .badge-dot { background: #378ADD; }
+
+  .detail-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 18px; align-items: start; }
+
+  .panel { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 22px; margin-bottom: 18px; }
+  .panel h3 { font-family: var(--font-display); font-weight: 600; font-size: 14.5px; margin-bottom: 14px; }
+
+  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--slate-200); font-size: 13px; }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .k { color: var(--slate-600); }
+  .info-row .v { font-weight: 500; text-align: right; }
+
+  /* Warranty countdown bar */
+  .warranty-bar-track { height: 8px; background: var(--slate-200); border-radius: 4px; margin-top: 10px; overflow: hidden; }
+  .warranty-bar-fill { height: 100%; background: var(--amber-500); border-radius: 4px; }
+  .warranty-label { font-size: 12px; color: var(--slate-600); margin-top: 8px; }
+
+  /* Timeline (assignment + maintenance history) */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: var(--slate-200); }
+  .timeline-item { position: relative; padding-bottom: 22px; }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-dot { position: absolute; left: -24px; top: 3px; width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--slate-200); }
+  .timeline-dot.assign { background: #378ADD; }
+  .timeline-dot.repair { background: #EF9F27; }
+  .timeline-dot.return { background: #94A3B8; }
+  .timeline-title { font-size: 13.5px; font-weight: 500; }
+  .timeline-sub { font-size: 12px; color: var(--slate-600); margin-top: 2px; }
+  .timeline-date { font-family: var(--font-mono); font-size: 11px; color: var(--slate-600); margin-top: 3px; }
+
+  @media (max-width: 950px) {
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">AF</div>
+    <div class="sidebar-brand-text">Asset<span>Flow</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <div class="sidebar-section-label">Manage</div>
+    <a href="employees.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 13.6c2.9.3 5 2.6 5 5.9"/></svg>
+      Employees
+    </a>
+    <a href="assets.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      Assets
+    </a>
+    <a href="tickets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5A2.5 2.5 0 015.5 6h13A2.5 2.5 0 0121 8.5v1.7a2 2 0 000 3.6v1.7a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 15.5v-1.7a2 2 0 000-3.6z"/></svg>
+      Tickets
+      <span class="nav-badge">12</span>
+    </a>
+    <a href="reports.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      Reports
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="avatar">RA</div>
+    <div>
+      <div class="sidebar-footer-name">R. Admin</div>
+      <div class="sidebar-footer-role">Administrator</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div>
+    <div class="topbar-title">Asset Details</div>
+    <div class="topbar-meta">BHEL Haridwar</div>
+  </div>
+  <div style="display:flex; gap:12px;">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <span class="icon-dot"></span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <a href="assets.html" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to all assets
+  </a>
+
+  <div class="asset-header">
+    <div class="asset-header-left">
+      <div class="asset-icon-lg">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      </div>
+      <div>
+        <h1>Dell Latitude 5420</h1>
+        <div class="asset-meta-line"><span class="mono">LAP-1001</span> · Laptop · Currently assigned</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" onclick="alert('This opens the reassign-asset modal once connected to the backend.')">Reassign</button>
+      <button class="btn-primary" onclick="alert('This opens the edit-asset form once connected to the backend.')">Edit asset</button>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <!-- LEFT: specs + warranty + current status -->
+    <div>
+      <div class="panel">
+        <h3>Asset information</h3>
+        <div class="info-row"><span class="k">Brand</span><span class="v">Dell</span></div>
+        <div class="info-row"><span class="k">Model</span><span class="v">Latitude 5420</span></div>
+        <div class="info-row"><span class="k">Serial number</span><span class="v" style="font-family: var(--font-mono); font-size:12px;">DL5420-88213X</span></div>
+        <div class="info-row"><span class="k">Category</span><span class="v">Laptop</span></div>
+        <div class="info-row"><span class="k">Purchase date</span><span class="v">14 Jun 2024</span></div>
+        <div class="info-row"><span class="k">Status</span><span class="v"><span class="badge badge-assigned"><span class="badge-dot"></span>Assigned</span></span></div>
+      </div>
+
+      <div class="panel">
+        <h3>Warranty</h3>
+        <div class="info-row"><span class="k">Valid until</span><span class="v">June 2028</span></div>
+        <div class="warranty-bar-track"><div class="warranty-bar-fill" style="width: 62%;"></div></div>
+        <div class="warranty-label">62% of warranty period remaining</div>
+      </div>
+
+      <div class="panel">
+        <h3>Currently assigned to</h3>
+        <div class="info-row"><span class="k">Employee</span><span class="v">Erica Fernandes</span></div>
+        <div class="info-row"><span class="k">Department</span><span class="v">IT</span></div>
+        <div class="info-row"><span class="k">Assigned since</span><span class="v">14 Jan 2025</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: full history timeline -->
+    <div>
+      <div class="panel">
+        <h3>Asset history</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot assign"></div>
+            <div class="timeline-title">Assigned to Erica Fernandes</div>
+            <div class="timeline-sub">IT Department</div>
+            <div class="timeline-date">14 Jan 2025</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot repair"></div>
+            <div class="timeline-title">Repaired — battery replacement</div>
+            <div class="timeline-sub">Serviced by V. Singh, Engineer · Ticket TKT-1742</div>
+            <div class="timeline-date">3 Dec 2024</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot return"></div>
+            <div class="timeline-title">Returned to inventory</div>
+            <div class="timeline-sub">Previous holder: Aditi Rao</div>
+            <div class="timeline-date">20 Nov 2024</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot assign"></div>
+            <div class="timeline-title">Assigned to Aditi Rao</div>
+            <div class="timeline-sub">Finance Department</div>
+            <div class="timeline-date">2 Aug 2024</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot return"></div>
+            <div class="timeline-title">Added to inventory</div>
+            <div class="timeline-sub">Purchased new</div>
+            <div class="timeline-date">14 Jun 2024</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

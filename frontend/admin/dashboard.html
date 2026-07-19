@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | AssetFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  :root { --sidebar-w: 240px; --topbar-h: 64px; }
+  body { background: var(--slate-100); }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--navy-900); display: flex; flex-direction: column; z-index: 20; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand-icon { width: 32px; height: 32px; border-radius: 7px; background: var(--amber-500); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; color: var(--navy-900); font-size: 14px; }
+  .sidebar-brand-text { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--white); }
+  .sidebar-brand-text span { color: var(--amber-400); }
+  .sidebar-section-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E7BA3; padding: 20px 22px 8px; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 22px; color: #B8C6DB; text-decoration: none; font-size: 13.5px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--white); }
+  .nav-item.active { background: rgba(242,169,0,0.1); color: var(--amber-400); border-left-color: var(--amber-500); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: var(--white); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; padding: 1px 6px; border-radius: 10px; }
+  .sidebar-footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-300); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-footer-name { color: var(--white); font-size: 13px; font-weight: 500; }
+  .sidebar-footer-role { color: #7F94B3; font-size: 11.5px; }
+
+  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10; }
+  .topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--slate-900); }
+  .topbar-meta { font-family: var(--font-mono); font-size: 11.5px; color: #98A4B3; margin-top: 2px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--slate-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--slate-600); position: relative; }
+  .icon-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--amber-500); border: 1.5px solid var(--white); }
+
+  .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 28px; min-height: calc(100vh - var(--topbar-h)); }
+  .page-header { margin-bottom: 22px; }
+  .page-header h1 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .page-header p { font-size: 13.5px; color: var(--slate-600); }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+  .stat-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 18px 20px; }
+  .stat-card .num { font-family: var(--font-mono); font-size: 26px; font-weight: 500; color: var(--slate-900); line-height: 1; }
+  .stat-card .label { font-size: 12.5px; color: var(--slate-600); margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+  .stage-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .stage-dot.blue { background: #378ADD; }
+  .stage-dot.amber { background: #EF9F27; }
+  .stage-dot.green { background: #639922; }
+  .stage-dot.red { background: #E24B4A; }
+
+  .panels-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .panel { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 20px; }
+  .panel h3 { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin-bottom: 14px; }
+
+  .list-row { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--slate-200); font-size: 13px; }
+  .list-row:last-child { border-bottom: none; }
+  .list-dot { width: 3px; height: 28px; border-radius: 2px; flex-shrink: 0; }
+  .list-dot.Critical { background: #E24B4A; }
+  .list-dot.High { background: #EF9F27; }
+  .list-dot.Medium { background: #378ADD; }
+  .list-dot.Low { background: #94A3B8; }
+  .list-info { flex: 1; }
+  .list-title { font-weight: 500; }
+  .list-sub { font-size: 11.5px; color: var(--slate-600); margin-top: 2px; }
+
+  @media (max-width: 1000px) {
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .panels-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">AF</div>
+    <div class="sidebar-brand-text">Asset<span>Flow</span></div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+
+    <div class="sidebar-section-label">Manage</div>
+    <a href="employees.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6.2 6.5-6.2s6.5 2.6 6.5 6.2"/><circle cx="17.5" cy="8.5" r="2.6"/><path d="M15.5 13.6c2.9.3 5 2.6 5 5.9"/></svg>
+      Employees
+    </a>
+    <a href="assets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
+      Assets
+    </a>
+    <a href="tickets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5A2.5 2.5 0 015.5 6h13A2.5 2.5 0 0121 8.5v1.7a2 2 0 000 3.6v1.7a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 15.5v-1.7a2 2 0 000-3.6z"/></svg>
+      Tickets
+    </a>
+    <a href="reports.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      Reports
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar" id="userAvatar">--</div>
+    <div>
+      <div class="sidebar-footer-name" id="userName">Loading...</div>
+      <div class="sidebar-footer-role">Administrator</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div>
+    <div class="topbar-title">Dashboard</div>
+    <div class="topbar-meta">BHEL Haridwar</div>
+  </div>
+  <div style="display:flex; gap:12px;">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <span class="icon-dot"></span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <h1 id="welcomeHeading">Welcome back</h1>
+    <p>Here's an overview of your organization's IT assets and support activity.</p>
+  </div>
+
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="num" id="statEmployees">0</div>
+      <div class="label"><span class="stage-dot blue"></span>Total employees</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statAssets">0</div>
+      <div class="label"><span class="stage-dot green"></span>Total assets</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statOpenTickets">0</div>
+      <div class="label"><span class="stage-dot amber"></span>Open tickets</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statCritical">0</div>
+      <div class="label"><span class="stage-dot red"></span>Critical tickets</div>
+    </div>
+  </div>
+
+  <div class="panels-row">
+    <div class="panel">
+      <h3>Recent tickets</h3>
+      <div id="recentTickets">
+        <p style="color:var(--slate-600); font-size:13px;">Loading...</p>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Ticket status breakdown</h3>
+      <div id="statusBreakdown">
+        <p style="color:var(--slate-600); font-size:13px;">Loading...</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const token = localStorage.getItem('token');
+  const userName = localStorage.getItem('name') || 'Admin';
+  if (!token) window.location.href = '../login.html';
+
+  document.getElementById('userName').textContent = userName;
+  document.getElementById('userAvatar').textContent = userName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('welcomeHeading').textContent = `Welcome back, ${userName}`;
+
+  async function loadDashboard() {
+    try {
+      const [empRes, assetRes, ticketRes] = await Promise.all([
+        fetch('http://localhost:5001/api/employees', { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch('http://localhost:5001/api/assets', { headers: { 'Authorization': `Bearer ${token}` } }),
+        fetch('http://localhost:5001/api/tickets', { headers: { 'Authorization': `Bearer ${token}` } })
+      ]);
+
+      const employees = await empRes.json();
+      const assets = await assetRes.json();
+      const tickets = await ticketRes.json();
+
+      document.getElementById('statEmployees').textContent = Array.isArray(employees) ? employees.length : 0;
+      document.getElementById('statAssets').textContent = Array.isArray(assets) ? assets.length : 0;
+
+      if (Array.isArray(tickets)) {
+        const openCount = tickets.filter(t => t.status === 'Open' || t.status === 'Assigned' || t.status === 'In Progress').length;
+        const criticalCount = tickets.filter(t => t.priority === 'Critical').length;
+        document.getElementById('statOpenTickets').textContent = openCount;
+        document.getElementById('statCritical').textContent = criticalCount;
+
+        // Recent tickets (latest 5)
+        const recentDiv = document.getElementById('recentTickets');
+        if (tickets.length === 0) {
+          recentDiv.innerHTML = `<p style="color:var(--slate-600); font-size:13px;">No tickets yet.</p>`;
+        } else {
+          recentDiv.innerHTML = tickets.slice(0, 5).map(t => `
+            <div class="list-row">
+              <div class="list-dot ${t.priority}"></div>
+              <div class="list-info">
+                <div class="list-title">${t.title}</div>
+                <div class="list-sub">TKT-${t.ticket_id} · ${t.raised_by_name || '—'} · ${t.status}</div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Status breakdown
+        const statuses = ['Open', 'Assigned', 'In Progress', 'Resolved', 'Closed'];
+        const breakdownDiv = document.getElementById('statusBreakdown');
+        breakdownDiv.innerHTML = statuses.map(s => {
+          const count = tickets.filter(t => t.status === s).length;
+          return `
+            <div class="list-row">
+              <div class="list-info">
+                <div class="list-title">${s}</div>
+              </div>
+              <div style="font-family:var(--font-mono); font-weight:500;">${count}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+    } catch (error) {
+      console.error('Load dashboard error:', error);
+    }
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>

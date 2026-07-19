@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | AssetFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  :root { --sidebar-w: 240px; --topbar-h: 64px; }
+  body { background: var(--slate-100); }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w); background: var(--navy-900); display: flex; flex-direction: column; z-index: 20; }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .sidebar-brand-icon { width: 32px; height: 32px; border-radius: 7px; background: var(--amber-500); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 700; color: var(--navy-900); font-size: 14px; }
+  .sidebar-brand-text { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--white); }
+  .sidebar-brand-text span { color: var(--amber-400); }
+  .sidebar-section-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #5E7BA3; padding: 20px 22px 8px; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding-bottom: 16px; }
+  .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 22px; color: #B8C6DB; text-decoration: none; font-size: 13.5px; font-weight: 500; border-left: 3px solid transparent; transition: all 0.15s ease; }
+  .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--white); }
+  .nav-item.active { background: rgba(242,169,0,0.1); color: var(--amber-400); border-left-color: var(--amber-500); }
+  .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
+  .nav-badge { margin-left: auto; background: var(--danger); color: var(--white); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; padding: 1px 6px; border-radius: 10px; }
+  .sidebar-footer { padding: 16px 22px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--navy-300); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 12.5px; font-weight: 600; flex-shrink: 0; }
+  .sidebar-footer-name { color: var(--white); font-size: 13px; font-weight: 500; }
+  .sidebar-footer-role { color: #7F94B3; font-size: 11.5px; }
+
+  .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h); background: var(--white); border-bottom: 1px solid var(--slate-200); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10; }
+  .topbar-title { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--slate-900); }
+  .topbar-meta { font-family: var(--font-mono); font-size: 11.5px; color: #98A4B3; margin-top: 2px; }
+  .icon-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--slate-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--slate-600); position: relative; }
+  .icon-dot { position: absolute; top: 7px; right: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--amber-500); border: 1.5px solid var(--white); }
+
+  .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); padding: 28px; min-height: calc(100vh - var(--topbar-h)); }
+  .page-header { margin-bottom: 22px; }
+  .page-header h1 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin-bottom: 4px; }
+  .page-header p { font-size: 13.5px; color: var(--slate-600); }
+
+  .stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+  .stat-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 18px 20px; }
+  .stat-card .num { font-family: var(--font-mono); font-size: 24px; font-weight: 500; color: var(--slate-900); line-height: 1; }
+  .stat-card .label { font-size: 12.5px; color: var(--slate-600); margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+  .stage-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .stage-dot.assigned { background: #378ADD; }
+  .stage-dot.progress { background: #EF9F27; }
+  .stage-dot.resolved { background: #639922; }
+  .stage-dot.critical { background: #E24B4A; }
+
+  .panel { background: var(--white); border: 1px solid var(--slate-200); border-radius: 12px; padding: 20px; }
+  .panel h3 { font-family: var(--font-display); font-weight: 600; font-size: 15px; margin-bottom: 14px; }
+
+  .queue-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--slate-200); }
+  .queue-row:last-child { border-bottom: none; }
+  .queue-priority { width: 3px; height: 32px; border-radius: 2px; flex-shrink: 0; }
+  .queue-priority.High { background: #EF9F27; }
+  .queue-priority.Critical { background: #E24B4A; }
+  .queue-priority.Medium { background: #378ADD; }
+  .queue-priority.Low { background: #94A3B8; }
+  .queue-info { flex: 1; }
+  .queue-title { font-size: 13.5px; font-weight: 500; }
+  .queue-sub { font-size: 12px; color: var(--slate-600); margin-top: 2px; }
+  .queue-id { font-family: var(--font-mono); font-size: 11.5px; color: var(--navy-700); }
+
+  @media (max-width: 1000px) {
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-icon">AF</div>
+    <div class="sidebar-brand-text">Asset<span>Flow</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="dashboard.html" class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </a>
+    <div class="sidebar-section-label">Work queue</div>
+    <a href="tickets.html" class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8.5A2.5 2.5 0 015.5 6h13A2.5 2.5 0 0121 8.5v1.7a2 2 0 000 3.6v1.7a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 15.5v-1.7a2 2 0 000-3.6z"/></svg>
+      My Assigned Tickets
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="avatar" id="userAvatar">--</div>
+    <div>
+      <div class="sidebar-footer-name" id="userName">Loading...</div>
+      <div class="sidebar-footer-role">IT Engineer</div>
+    </div>
+  </div>
+</aside>
+
+<header class="topbar">
+  <div>
+    <div class="topbar-title">Dashboard</div>
+    <div class="topbar-meta">BHEL Haridwar · IT Department</div>
+  </div>
+  <div style="display:flex; gap:12px;">
+    <button class="icon-btn" aria-label="Notifications">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+      <span class="icon-dot"></span>
+    </button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <h1 id="welcomeHeading">Welcome back</h1>
+    <p>Here's your current ticket load and priorities for today.</p>
+  </div>
+
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="num" id="statAssigned">0</div>
+      <div class="label"><span class="stage-dot assigned"></span>Assigned to you</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statProgress">0</div>
+      <div class="label"><span class="stage-dot progress"></span>In progress</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statResolved">0</div>
+      <div class="label"><span class="stage-dot resolved"></span>Resolved</div>
+    </div>
+    <div class="stat-card">
+      <div class="num" id="statCritical">0</div>
+      <div class="label"><span class="stage-dot critical"></span>Critical priority</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Your queue</h3>
+    <div id="queueList">
+      <p style="color:var(--slate-600); font-size:13.5px;">Loading...</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  const token = localStorage.getItem('token');
+  const userName = localStorage.getItem('name') || 'Engineer';
+  if (!token) window.location.href = '../login.html';
+
+  document.getElementById('userName').textContent = userName;
+  document.getElementById('userAvatar').textContent = userName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('welcomeHeading').textContent = `Welcome back, ${userName}`;
+
+  async function loadDashboard() {
+    const queueList = document.getElementById('queueList');
+    try {
+      const res = await fetch('http://localhost:5001/api/tickets/assigned', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const tickets = await res.json();
+
+      if (!res.ok) {
+        queueList.innerHTML = `<p style="color:var(--danger); font-size:13.5px;">Could not load tickets.</p>`;
+        return;
+      }
+
+      document.getElementById('statAssigned').textContent = tickets.length;
+      document.getElementById('statProgress').textContent = tickets.filter(t => t.status === 'In Progress').length;
+      document.getElementById('statResolved').textContent = tickets.filter(t => t.status === 'Resolved').length;
+      document.getElementById('statCritical').textContent = tickets.filter(t => t.priority === 'Critical').length;
+
+      if (tickets.length === 0) {
+        queueList.innerHTML = `<p style="color:var(--slate-600); font-size:13.5px;">No tickets assigned to you yet.</p>`;
+        return;
+      }
+
+      const sorted = [...tickets].sort((a, b) => {
+        const order = { 'Critical': 0, 'High': 1, 'Medium': 2, 'Low': 3 };
+        return order[a.priority] - order[b.priority];
+      });
+
+      queueList.innerHTML = sorted.slice(0, 5).map(t => `
+        <div class="queue-row">
+          <div class="queue-priority ${t.priority}"></div>
+          <div class="queue-info">
+            <div class="queue-title">${t.title}</div>
+            <div class="queue-sub">Raised by ${t.raised_by_name || '—'}</div>
+          </div>
+          <div class="queue-id">TKT-${t.ticket_id}</div>
+        </div>
+      `).join('');
+
+    } catch (err) {
+      console.error('Load dashboard error:', err);
+      queueList.innerHTML = `<p style="color:var(--danger); font-size:13.5px;">Could not connect to the server.</p>`;
+    }
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
