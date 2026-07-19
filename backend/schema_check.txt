@@ -1,0 +1,21 @@
+Field	Type	Null	Key	Default	Extra
+employee_id	int	NO	PRI	NULL	auto_increment
+user_id	int	NO	MUL	NULL	
+department	varchar(100)	YES		NULL	
+designation	varchar(100)	YES		NULL	
+Field	Type	Null	Key	Default	Extra
+asset_id	int	NO	PRI	NULL	auto_increment
+asset_tag	varchar(50)	NO	UNI	NULL	
+asset_type	varchar(50)	NO		NULL	
+brand	varchar(100)	YES		NULL	
+model	varchar(100)	YES		NULL	
+purchase_date	date	YES		NULL	
+warranty_expiry	date	YES		NULL	
+status	varchar(30)	YES		Available	
+created_at	timestamp	YES		CURRENT_TIMESTAMP	DEFAULT_GENERATED
+Field	Type	Null	Key	Default	Extra
+assignment_id	int	NO	PRI	NULL	auto_increment
+asset_id	int	NO	MUL	NULL	
+employee_id	int	NO	MUL	NULL	
+assigned_date	date	NO		NULL	
+returned_date	date	YES		NULL	

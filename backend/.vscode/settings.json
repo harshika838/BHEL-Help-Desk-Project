@@ -1,0 +1,20 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "IT Helpdesk DB",
+            "group": "localhost",
+            "database": "it_helpdesk_db",
+            "username": "root"
+        }
+    ],
+    "liveServer.settings.port": 5501
+}

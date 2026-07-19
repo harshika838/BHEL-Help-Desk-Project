@@ -1,0 +1,16 @@
+Field	Type	Null	Key	Default	Extra
+ticket_id	int	NO	PRI	NULL	auto_increment
+raised_by	int	NO	MUL	NULL	
+assigned_to	int	YES	MUL	NULL	
+title	varchar(200)	NO		NULL	
+description	text	YES		NULL	
+priority	varchar(20)	YES		Medium	
+status	varchar(30)	YES		Open	
+created_at	timestamp	YES		CURRENT_TIMESTAMP	DEFAULT_GENERATED
+resolved_at	timestamp	YES		NULL	
+Field	Type	Null	Key	Default	Extra
+comment_id	int	NO	PRI	NULL	auto_increment
+ticket_id	int	NO	MUL	NULL	
+user_id	int	NO	MUL	NULL	
+comment	text	NO		NULL	
+created_at	timestamp	YES		CURRENT_TIMESTAMP	DEFAULT_GENERATED
