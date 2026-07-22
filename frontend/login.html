@@ -1,509 +1,1710 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AssetFlow | Sign In</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<style>
-  .screen {
-    display: grid;
-    grid-template-columns: 1.1fr 1fr;
-    min-height: 100vh;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  /* ---------- LEFT PANEL: BRAND ---------- */
-  .brand-panel {
-    background: linear-gradient(160deg, var(--navy-900) 0%, var(--navy-700) 55%, var(--navy-500) 100%);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 48px 56px;
-    color: var(--white);
-  }
+  <title>AssetFlow | Sign In</title>
 
-  .brand-mark {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    z-index: 2;
-  }
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
 
-  .brand-mark-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: var(--amber-500);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--navy-900);
-    font-size: 18px;
-  }
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
 
-  .brand-mark-text {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 20px;
-    letter-spacing: 0.02em;
-  }
+  <!-- Your Main CSS -->
+  <link rel="stylesheet" href="css/style.css">
 
-  .brand-mark-text span { color: var(--amber-400); }
 
-  .brand-copy {
-    z-index: 2;
-    max-width: 440px;
-  }
+  <style>
 
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--amber-400);
-    margin-bottom: 18px;
-    display: block;
-  }
+    /* =====================================================
+       MAIN PAGE LAYOUT
+    ===================================================== */
 
-  .brand-copy h1 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 42px;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin-bottom: 20px;
-  }
+    .screen {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      min-height: 100vh;
+    }
 
-  .brand-copy p {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #C3D0E0;
-    max-width: 380px;
-  }
 
-  .stat-row {
-    display: flex;
-    gap: 36px;
-    margin-top: 36px;
-    z-index: 2;
-  }
+    /* =====================================================
+       LEFT BRAND PANEL
+    ===================================================== */
 
-  .stat-row div { display: flex; flex-direction: column; gap: 4px; }
+    .brand-panel {
+      position: relative;
+      overflow: hidden;
 
-  .stat-num {
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--amber-400);
-  }
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
 
-  .stat-label {
-    font-size: 12px;
-    color: #8FA3BF;
-  }
+      padding: 48px 56px;
 
-  .brand-footer {
-    z-index: 2;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: #6E85A3;
-    letter-spacing: 0.04em;
-  }
+      color: var(--white);
 
-  /* Network animation */
-  .network-canvas {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    opacity: 0.55;
-  }
+      background:
+        linear-gradient(
+          160deg,
+          var(--navy-900) 0%,
+          var(--navy-700) 55%,
+          var(--navy-500) 100%
+        );
+    }
 
-  /* ---------- RIGHT PANEL: FORM ---------- */
-  .form-panel {
-    background: var(--slate-100);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px;
-  }
 
-  .form-card {
-    width: 100%;
-    max-width: 380px;
-  }
+    /* =====================================================
+       LOGO
+    ===================================================== */
 
-  .form-card h2 {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 26px;
-    margin-bottom: 6px;
-    color: var(--navy-900);
-  }
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
 
-  .form-card > p {
-    font-size: 14px;
-    color: var(--slate-600);
-    margin-bottom: 28px;
-  }
+      position: relative;
+      z-index: 2;
+    }
 
-  .role-tabs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    background: var(--slate-200);
-    border-radius: 10px;
-    padding: 4px;
-    margin-bottom: 28px;
-  }
 
-  .role-tab {
-    border: none;
-    background: transparent;
-    padding: 9px 0;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--slate-600);
-    border-radius: 7px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
+    .brand-mark-icon {
+      width: 40px;
+      height: 40px;
 
-  .role-tab.active {
-    background: var(--navy-700);
-    color: var(--white);
-    box-shadow: 0 2px 8px rgba(15,42,74,0.25);
-  }
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  .field { margin-bottom: 18px; }
+      border-radius: 8px;
 
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--slate-900);
-    margin-bottom: 7px;
-    letter-spacing: 0.01em;
-  }
+      background: var(--amber-500);
 
-  .field input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid var(--slate-200);
-    border-radius: 8px;
-    font-family: var(--font-body);
-    font-size: 14px;
-    background: var(--white);
-    color: var(--slate-900);
-    transition: border-color 0.15s ease;
-  }
+      color: var(--navy-900);
 
-  .field input::placeholder { color: #A3AEBB; }
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+    }
 
-  .field input:focus {
-    outline: none;
-    border-color: var(--navy-500);
-    box-shadow: 0 0 0 3px rgba(27,58,99,0.12);
-  }
 
-  .field-id-hint {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: #98A4B3;
-    margin-top: 6px;
-  }
+    .brand-mark-text {
+      font-family: var(--font-display);
 
-  .form-meta {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: -2px 0 22px;
-    font-size: 13px;
-  }
+      font-size: 20px;
+      font-weight: 600;
 
-  .form-meta a {
-    color: var(--navy-500);
-    text-decoration: none;
-    font-weight: 500;
-  }
+      letter-spacing: 0.02em;
+    }
 
-  .remember {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    color: var(--slate-600);
-  }
 
-  .btn-primary {
-    width: 100%;
-    padding: 13px 0;
-    background: var(--navy-700);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14.5px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
+    .brand-mark-text span {
+      color: var(--amber-400);
+    }
 
-  .btn-primary:hover { background: var(--navy-500); }
 
-  .btn-primary .arrow { transition: transform 0.15s ease; }
-  .btn-primary:hover .arrow { transform: translateX(3px); }
+    /* =====================================================
+       LEFT MAIN CONTENT
+    ===================================================== */
 
-  .form-footer {
-    text-align: center;
-    margin-top: 24px;
-    font-size: 12.5px;
-    color: var(--slate-600);
-  }
+    .brand-copy {
+      position: relative;
+      z-index: 2;
 
-  .form-footer span { font-family: var(--font-mono); color: #98A4B3; }
+      max-width: 480px;
+    }
 
-  @media (max-width: 860px) {
-    .screen { grid-template-columns: 1fr; }
-    .brand-panel { min-height: 280px; padding: 32px; }
-    .brand-copy h1 { font-size: 30px; }
-    .stat-row { display: none; }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .network-canvas { display: none; }
-  }
-</style>
+    .eyebrow {
+      display: block;
+
+      margin-bottom: 18px;
+
+      color: var(--amber-400);
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      letter-spacing: 0.12em;
+
+      text-transform: uppercase;
+    }
+
+
+    /* MAIN HEADING
+       WHITE COLOR
+    ===================================================== */
+
+    .brand-copy h1 {
+      margin-bottom: 20px;
+
+      color: #ffffff;
+
+      font-family: var(--font-display);
+
+      font-size: 42px;
+
+      font-weight: 700;
+
+      line-height: 1.15;
+
+      letter-spacing: -0.01em;
+    }
+
+
+    .brand-copy > p {
+      max-width: 420px;
+
+      margin-bottom: 34px;
+
+      color: #C3D0E0;
+
+      font-size: 15px;
+
+      line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       FEATURE CARDS
+    ===================================================== */
+
+    .feature-list {
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      gap: 12px;
+
+      width: 100%;
+    }
+
+
+    .feature-card {
+      padding: 18px 15px;
+
+      border: 1px solid rgba(255, 255, 255, 0.10);
+
+      border-radius: 10px;
+
+      background: rgba(255, 255, 255, 0.045);
+
+      backdrop-filter: blur(5px);
+
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+
+      background: rgba(255, 255, 255, 0.08);
+
+      border-color: rgba(255, 194, 51, 0.35);
+    }
+
+
+    .feature-icon {
+      width: 32px;
+      height: 32px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 12px;
+
+      border-radius: 7px;
+
+      background: rgba(255, 194, 51, 0.12);
+
+      color: var(--amber-400);
+
+      font-family: var(--font-mono);
+
+      font-size: 12px;
+
+      font-weight: 500;
+    }
+
+
+    .feature-card h3 {
+      margin-bottom: 7px;
+
+      color: #ffffff;
+
+      font-family: var(--font-display);
+
+      font-size: 12px;
+
+      font-weight: 600;
+
+      letter-spacing: 0.04em;
+    }
+
+
+    .feature-card p {
+      margin: 0;
+
+      color: #8FA3BF;
+
+      font-size: 11px;
+
+      line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       LEFT FOOTER
+    ===================================================== */
+
+    .brand-footer {
+      position: relative;
+      z-index: 2;
+
+      color: #6E85A3;
+
+      font-family: var(--font-mono);
+
+      font-size: 11px;
+
+      letter-spacing: 0.04em;
+    }
+
+
+    /* =====================================================
+       ANIMATED NETWORK BACKGROUND
+    ===================================================== */
+
+    .network-canvas {
+      position: absolute;
+
+      inset: 0;
+
+      z-index: 1;
+
+      opacity: 0.55;
+    }
+
+
+    /* =====================================================
+       RIGHT LOGIN PANEL
+    ===================================================== */
+
+    .form-panel {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      padding: 40px;
+
+      background: var(--slate-100);
+    }
+
+
+    .form-card {
+      width: 100%;
+
+      max-width: 380px;
+    }
+
+
+    .form-card h2 {
+      margin-bottom: 6px;
+
+      color: var(--navy-900);
+
+      font-family: var(--font-display);
+
+      font-size: 26px;
+
+      font-weight: 600;
+    }
+
+
+    .form-card > p {
+      margin-bottom: 28px;
+
+      color: var(--slate-600);
+
+      font-size: 14px;
+    }
+
+
+    /* =====================================================
+       ROLE TABS
+    ===================================================== */
+
+    .role-tabs {
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+
+      padding: 4px;
+
+      margin-bottom: 28px;
+
+      border-radius: 10px;
+
+      background: var(--slate-200);
+    }
+
+
+    .role-tab {
+      padding: 9px 0;
+
+      border: none;
+
+      border-radius: 7px;
+
+      background: transparent;
+
+      color: var(--slate-600);
+
+      font-family: var(--font-body);
+
+      font-size: 13px;
+
+      font-weight: 500;
+
+      cursor: pointer;
+
+      transition: all 0.15s ease;
+    }
+
+
+    .role-tab.active {
+      background: var(--navy-700);
+
+      color: var(--white);
+
+      box-shadow:
+        0 2px 8px rgba(15, 42, 74, 0.25);
+    }
+
+
+    /* =====================================================
+       INPUT FIELDS
+    ===================================================== */
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+
+    .field label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: var(--slate-900);
+
+      font-size: 12px;
+
+      font-weight: 500;
+
+      letter-spacing: 0.01em;
+    }
+
+
+    .field input {
+      width: 100%;
+
+      box-sizing: border-box;
+
+      padding: 12px 14px;
+
+      border: 1.5px solid var(--slate-200);
+
+      border-radius: 8px;
+
+      background: var(--white);
+
+      color: var(--slate-900);
+
+      font-family: var(--font-body);
+
+      font-size: 14px;
+
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+
+    .field input::placeholder {
+      color: #A3AEBB;
+    }
+
+
+    .field input:focus {
+      outline: none;
+
+      border-color: var(--navy-500);
+
+      box-shadow:
+        0 0 0 3px rgba(27, 58, 99, 0.12);
+    }
+
+
+    .field-id-hint {
+      margin-top: 6px;
+
+      color: #98A4B3;
+
+      font-family: var(--font-mono);
+
+      font-size: 11px;
+    }
+
+
+    /* =====================================================
+       REMEMBER ME / FORGOT PASSWORD
+    ===================================================== */
+
+    .form-meta {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      margin: -2px 0 22px;
+
+      font-size: 13px;
+    }
+
+
+    .remember {
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      color: var(--slate-600);
+    }
+
+
+    .form-meta a {
+      color: var(--navy-500);
+
+      font-weight: 500;
+
+      text-decoration: none;
+    }
+
+
+    .form-meta a:hover {
+      text-decoration: underline;
+    }
+
+
+    /* =====================================================
+       SIGN IN BUTTON
+    ===================================================== */
+
+    .btn-primary {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      gap: 8px;
+
+      width: 100%;
+
+      padding: 13px 0;
+
+      border: none;
+
+      border-radius: 8px;
+
+      background: var(--navy-700);
+
+      color: var(--white);
+
+      font-family: var(--font-body);
+
+      font-size: 14.5px;
+
+      font-weight: 600;
+
+      cursor: pointer;
+
+      transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+    }
+
+
+    .btn-primary:hover {
+      background: var(--navy-500);
+
+      transform: translateY(-1px);
+    }
+
+
+    .btn-primary:disabled {
+      opacity: 0.7;
+
+      cursor: not-allowed;
+
+      transform: none;
+    }
+
+
+    .btn-primary .arrow {
+      transition: transform 0.15s ease;
+    }
+
+
+    .btn-primary:hover .arrow {
+      transform: translateX(3px);
+    }
+
+
+    /* =====================================================
+       LOGIN FOOTER
+    ===================================================== */
+
+    .form-footer {
+      margin-top: 24px;
+
+      color: var(--slate-600);
+
+      font-size: 12.5px;
+
+      line-height: 1.5;
+
+      text-align: center;
+    }
+
+
+    .form-footer span {
+      color: #98A4B3;
+
+      font-family: var(--font-mono);
+    }
+
+
+    /* =====================================================
+       RESPONSIVE DESIGN
+    ===================================================== */
+
+    @media (max-width: 1000px) {
+
+      .screen {
+        grid-template-columns: 1fr;
+      }
+
+
+      .brand-panel {
+        min-height: auto;
+
+        padding: 40px;
+      }
+
+
+      .brand-copy {
+        margin-top: 70px;
+
+        margin-bottom: 60px;
+      }
+
+
+      .brand-copy h1 {
+        font-size: 36px;
+      }
+
+    }
+
+
+    @media (max-width: 650px) {
+
+      .brand-panel {
+        padding: 32px 24px;
+      }
+
+
+      .brand-copy {
+        margin-top: 60px;
+      }
+
+
+      .brand-copy h1 {
+        font-size: 30px;
+      }
+
+
+      .brand-copy > p {
+        font-size: 14px;
+      }
+
+
+      .feature-list {
+        grid-template-columns: 1fr;
+      }
+
+
+      .form-panel {
+        padding: 32px 24px;
+      }
+
+    }
+
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .network-canvas {
+        display: none;
+      }
+
+
+      .feature-card,
+      .btn-primary {
+        transition: none;
+      }
+
+    }
+
+  </style>
+
 </head>
+
+
 <body>
 
-<div class="screen">
 
-  <!-- LEFT: BRAND PANEL -->
-  <div class="brand-panel">
-    <canvas class="network-canvas" id="netCanvas"></canvas>
+  <!-- =====================================================
+       MAIN SCREEN
+  ===================================================== -->
 
-    <div class="brand-mark">
-      <div class="brand-mark-icon">AF</div>
-      <div class="brand-mark-text">Asset<span>Flow</span></div>
-    </div>
+  <div class="screen">
 
-    <div class="brand-copy">
-      <span class="eyebrow">Enterprise IT Asset &amp; Help Desk</span>
-      <h1>Every asset tracked.<br>Every ticket resolved.</h1>
-      <p>One system for inventory, assignment, and support — built for teams that can't afford to lose track of a single device.</p>
 
-      <div class="stat-row">
-        <div>
-          <span class="stat-num">1,240+</span>
-          <span class="stat-label">Assets tracked</span>
+    <!-- =================================================
+         LEFT BRAND SECTION
+    ================================================== -->
+
+    <div class="brand-panel">
+
+
+      <!-- Animated Network -->
+      <canvas
+        class="network-canvas"
+        id="netCanvas">
+      </canvas>
+
+
+      <!-- Logo -->
+
+      <div class="brand-mark">
+
+        <div class="brand-mark-icon">
+          AF
         </div>
-        <div>
-          <span class="stat-num">98.2%</span>
-          <span class="stat-label">Tickets resolved</span>
+
+        <div class="brand-mark-text">
+          Asset<span>Flow</span>
         </div>
-        <div>
-          <span class="stat-num">3</span>
-          <span class="stat-label">Role types</span>
-        </div>
+
       </div>
+
+
+
+      <!-- Main Content -->
+
+      <div class="brand-copy">
+
+
+        <span class="eyebrow">
+          Enterprise IT Asset &amp; Help Desk
+        </span>
+
+
+        <!-- WHITE HEADING -->
+
+        <h1>
+          Manage every asset.<br>
+          Resolve every ticket.
+        </h1>
+
+
+        <p>
+          One centralized platform for managing IT assets,
+          employee requests, and support workflows —
+          designed to keep your organization connected
+          and your IT operations organized.
+        </p>
+
+
+
+        <!-- Feature Cards -->
+
+        <div class="feature-list">
+
+
+          <!-- Feature 1 -->
+
+          <div class="feature-card">
+
+            <div class="feature-icon">
+              01
+            </div>
+
+            <h3>
+              ASSET MANAGEMENT
+            </h3>
+
+            <p>
+              Maintain organized records of
+              organizational IT assets.
+            </p>
+
+          </div>
+
+
+
+          <!-- Feature 2 -->
+
+          <div class="feature-card">
+
+            <div class="feature-icon">
+              02
+            </div>
+
+            <h3>
+              HELP DESK
+            </h3>
+
+            <p>
+              Raise, assign, track and resolve
+              IT support tickets efficiently.
+            </p>
+
+          </div>
+
+
+
+          <!-- Feature 3 -->
+
+          <div class="feature-card">
+
+            <div class="feature-icon">
+              03
+            </div>
+
+            <h3>
+              ROLE-BASED ACCESS
+            </h3>
+
+            <p>
+              Dedicated access for Employees,
+              IT Engineers and Admins.
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+
+      <!-- System Status -->
+
+      <div class="brand-footer">
+
+        SYSTEM STATUS: ONLINE
+        &nbsp;·&nbsp;
+        v1.0.0
+
+      </div>
+
+
     </div>
 
-    <div class="brand-footer">SYSTEM STATUS: ONLINE &nbsp;·&nbsp; v1.0.0</div>
+
+
+    <!-- =================================================
+         RIGHT LOGIN SECTION
+    ================================================== -->
+
+    <div class="form-panel">
+
+
+      <div class="form-card">
+
+
+        <h2>
+          Welcome back
+        </h2>
+
+
+        <p>
+          Sign in to access your dashboard.
+        </p>
+
+
+
+        <!-- Role Selection -->
+
+        <div class="role-tabs">
+
+
+          <button
+            type="button"
+            class="role-tab active"
+            data-role="employee">
+
+            Employee
+
+          </button>
+
+
+          <button
+            type="button"
+            class="role-tab"
+            data-role="engineer">
+
+            IT Engineer
+
+          </button>
+
+
+          <button
+            type="button"
+            class="role-tab"
+            data-role="admin">
+
+            Admin
+
+          </button>
+
+
+        </div>
+
+
+
+        <!-- Login Form -->
+
+        <form id="loginForm">
+
+
+          <!-- Employee / Engineer / Admin ID -->
+
+          <div class="field">
+
+            <label for="empId">
+              Employee ID
+            </label>
+
+
+            <input
+              type="text"
+              id="empId"
+              placeholder="e.g. BHEL-EMP-0452"
+              autocomplete="username"
+            >
+
+
+            <div class="field-id-hint">
+              Format: BHEL-EMP-XXXX
+            </div>
+
+          </div>
+
+
+
+          <!-- Password -->
+
+          <div class="field">
+
+            <label for="password">
+              Password
+            </label>
+
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            >
+
+          </div>
+
+
+
+          <!-- Remember / Forgot Password -->
+
+          <div class="form-meta">
+
+
+            <label class="remember">
+
+              <input
+                type="checkbox"
+                id="remember"
+                style="width:14px;height:14px;"
+              >
+
+              Remember me
+
+            </label>
+
+
+            <a href="#">
+              Forgot password?
+            </a>
+
+
+          </div>
+
+
+
+          <!-- Sign In -->
+
+          <button
+            type="submit"
+            class="btn-primary">
+
+            Sign in
+
+            <span class="arrow">
+              →
+            </span>
+
+          </button>
+
+
+        </form>
+
+
+
+        <!-- Login Footer -->
+
+        <div class="form-footer">
+
+          Need access?
+          Contact your
+          <span>IT Admin</span>
+          to get an account created.
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
   </div>
 
-  <!-- RIGHT: FORM PANEL -->
-  <div class="form-panel">
-    <div class="form-card">
-      <h2>Welcome back</h2>
-      <p>Sign in to access your dashboard.</p>
 
-      <div class="role-tabs">
-        <button class="role-tab active" data-role="employee">Employee</button>
-        <button class="role-tab" data-role="engineer">IT Engineer</button>
-        <button class="role-tab" data-role="admin">Admin</button>
-      </div>
 
-      <form id="loginForm">
-        <div class="field">
-          <label for="empId">Employee ID</label>
-          <input type="text" id="empId" placeholder="e.g. BHEL-EMP-0452" autocomplete="username">
-          <div class="field-id-hint">Format: BHEL-EMP-XXXX</div>
-        </div>
+  <!-- =====================================================
+       JAVASCRIPT
+  ===================================================== -->
 
-        <div class="field">
-          <label for="password">Password</label>
-          <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
-        </div>
+  <script>
 
-        <div class="form-meta">
-          <label class="remember">
-            <input type="checkbox" id="remember" style="width:14px;height:14px;">
-            Remember me
-          </label>
-          <a href="#">Forgot password?</a>
-        </div>
 
-        <button type="submit" class="btn-primary">
-          Sign in <span class="arrow">→</span>
-        </button>
-      </form>
+    /* =====================================================
+       ROLE TAB SWITCHING
+    ===================================================== */
 
-      <div class="form-footer">
-        Need access? Contact your <span>IT Admin</span> to get an account created.
-      </div>
-    </div>
-  </div>
+    document
+      .querySelectorAll('.role-tab')
+      .forEach(tab => {
 
-</div>
 
-<script>
-  // Role tab switching
-  document.querySelectorAll('.role-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const role = tab.dataset.role;
-      const empIdLabel = document.querySelector('label[for="empId"]');
-      const empIdInput = document.getElementById('empId');
-      if (role === 'admin') {
-        empIdLabel.textContent = 'Admin ID';
-        empIdInput.placeholder = 'e.g. BHEL-ADM-0012';
-      } else if (role === 'engineer') {
-        empIdLabel.textContent = 'Engineer ID';
-        empIdInput.placeholder = 'e.g. BHEL-ENG-0087';
-      } else {
-        empIdLabel.textContent = 'Employee ID';
-        empIdInput.placeholder = 'e.g. BHEL-EMP-0452';
-      }
-    });
-  });
+        tab.addEventListener('click', () => {
 
-  
-  // Real login handler — connects to backend
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const employeeId = document.getElementById('empId').value.trim();
-  const password = document.getElementById('password').value;
-  const activeTab = document.querySelector('.role-tab.active');
-  const roleMap = {
-    employee: 'Employee',
-    engineer: 'IT Engineer',
-    admin: 'Admin'
-  };
-  const role = roleMap[activeTab.dataset.role];
-  if (!employeeId || !password) {
-    alert('Please enter both Employee ID and Password.');
-    return;
-  }
-  const submitBtn = document.querySelector('.btn-primary');
-  const originalText = submitBtn.innerHTML;
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = 'Signing in...';
-  try {
-    const response = await fetch('http://localhost:5001/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ employeeId, password, role })
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      alert(data.message || 'Login failed. Please check your credentials.');
-      return;
-    }
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('role', data.role);
-    localStorage.setItem('name', data.name);
-    if (data.role === 'Admin') {
-      window.location.href = 'admin/dashboard.html';
-    } else if (data.role === 'IT Engineer') {
-      window.location.href = 'engineer/dashboard.html';
-    } else {
-      window.location.href = 'employee/dashboard.html';
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    alert('Could not connect to the server. Make sure the backend is running.');
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = originalText;
-  }
-});
 
-  // Signature element: animated node network representing assets/tickets flowing
-  const canvas = document.getElementById('netCanvas');
-  const ctx = canvas.getContext('2d');
-  let w, h, nodes;
+          // Remove active state from all tabs
 
-  function resize() {
-    const panel = canvas.parentElement;
-    w = canvas.width = panel.offsetWidth;
-    h = canvas.height = panel.offsetHeight;
-  }
+          document
+            .querySelectorAll('.role-tab')
+            .forEach(t => {
 
-  function initNodes() {
-    nodes = [];
-    const count = Math.floor((w * h) / 26000);
-    for (let i = 0; i < count; i++) {
-      nodes.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        r: Math.random() * 1.5 + 1,
-        pulse: Math.random() * Math.PI * 2
+              t.classList.remove('active');
+
+            });
+
+
+          // Activate selected tab
+
+          tab.classList.add('active');
+
+
+          // Get selected role
+
+          const role =
+            tab.dataset.role;
+
+
+          // Get form elements
+
+          const empIdLabel =
+            document.querySelector(
+              'label[for="empId"]'
+            );
+
+
+          const empIdInput =
+            document.getElementById(
+              'empId'
+            );
+
+
+          const fieldHint =
+            document.querySelector(
+              '.field-id-hint'
+            );
+
+
+
+          /* ADMIN */
+
+          if (role === 'admin') {
+
+
+            empIdLabel.textContent =
+              'Admin ID';
+
+
+            empIdInput.placeholder =
+              'e.g. BHEL-ADM-0012';
+
+
+            fieldHint.textContent =
+              'Format: BHEL-ADM-XXXX';
+
+          }
+
+
+
+          /* IT ENGINEER */
+
+          else if (role === 'engineer') {
+
+
+            empIdLabel.textContent =
+              'Engineer ID';
+
+
+            empIdInput.placeholder =
+              'e.g. BHEL-ENG-0087';
+
+
+            fieldHint.textContent =
+              'Format: BHEL-ENG-XXXX';
+
+          }
+
+
+
+          /* EMPLOYEE */
+
+          else {
+
+
+            empIdLabel.textContent =
+              'Employee ID';
+
+
+            empIdInput.placeholder =
+              'e.g. BHEL-EMP-0452';
+
+
+            fieldHint.textContent =
+              'Format: BHEL-EMP-XXXX';
+
+          }
+
+        });
+
       });
-    }
-  }
 
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    const maxDist = 150;
 
-    for (let i = 0; i < nodes.length; i++) {
-      const n = nodes[i];
-      n.x += n.vx; n.y += n.vy;
-      if (n.x < 0 || n.x > w) n.vx *= -1;
-      if (n.y < 0 || n.y > h) n.vy *= -1;
-      n.pulse += 0.02;
 
-      for (let j = i + 1; j < nodes.length; j++) {
-        const m = nodes[j];
-        const dx = n.x - m.x, dy = n.y - m.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < maxDist) {
-          ctx.strokeStyle = `rgba(242,169,0,${(1 - dist / maxDist) * 0.18})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(n.x, n.y);
-          ctx.lineTo(m.x, m.y);
-          ctx.stroke();
+    /* =====================================================
+       LOGIN HANDLER
+    ===================================================== */
+
+    document
+      .getElementById('loginForm')
+      .addEventListener(
+        'submit',
+        async (e) => {
+
+
+          e.preventDefault();
+
+
+
+          // Get entered ID
+
+          const employeeId =
+            document
+              .getElementById('empId')
+              .value
+              .trim();
+
+
+
+          // Get entered password
+
+          const password =
+            document
+              .getElementById('password')
+              .value;
+
+
+
+          // Get selected role
+
+          const activeTab =
+            document.querySelector(
+              '.role-tab.active'
+            );
+
+
+
+          // Map role
+
+          const roleMap = {
+
+            employee: 'Employee',
+
+            engineer: 'IT Engineer',
+
+            admin: 'Admin'
+
+          };
+
+
+
+          const role =
+            roleMap[
+              activeTab.dataset.role
+            ];
+
+
+
+          // Validate inputs
+
+          if (
+            !employeeId ||
+            !password
+          ) {
+
+
+            alert(
+              'Please enter both Employee ID and Password.'
+            );
+
+
+            return;
+
+          }
+
+
+
+          // Get submit button
+
+          const submitBtn =
+            document.querySelector(
+              '.btn-primary'
+            );
+
+
+          const originalText =
+            submitBtn.innerHTML;
+
+
+
+          // Loading state
+
+          submitBtn.disabled = true;
+
+          submitBtn.innerHTML =
+            'Signing in...';
+
+
+
+          try {
+
+
+            // Connect to backend
+
+            const response =
+              await fetch(
+                'http://localhost:5001/api/auth/login',
+                {
+
+                  method: 'POST',
+
+                  headers: {
+
+                    'Content-Type':
+                      'application/json'
+
+                  },
+
+                  body: JSON.stringify({
+
+                    employeeId,
+
+                    password,
+
+                    role
+
+                  })
+
+                }
+              );
+
+
+
+            // Get response
+
+            const data =
+              await response.json();
+
+
+
+            // Handle failed login
+
+            if (!response.ok) {
+
+
+              alert(
+                data.message ||
+                'Login failed. Please check your credentials.'
+              );
+
+
+              return;
+
+            }
+
+
+
+            // Save login information
+
+            localStorage.setItem(
+              'token',
+              data.token
+            );
+
+
+            localStorage.setItem(
+              'role',
+              data.role
+            );
+
+
+            localStorage.setItem(
+              'name',
+              data.name
+            );
+
+
+
+            // Redirect according to role
+
+            if (
+              data.role === 'Admin'
+            ) {
+
+
+              window.location.href =
+                'admin/dashboard.html';
+
+            }
+
+
+            else if (
+              data.role === 'IT Engineer'
+            ) {
+
+
+              window.location.href =
+                'engineer/dashboard.html';
+
+            }
+
+
+            else {
+
+
+              window.location.href =
+                'employee/dashboard.html';
+
+            }
+
+
+          }
+
+
+          catch (error) {
+
+
+            console.error(
+              'Login error:',
+              error
+            );
+
+
+            alert(
+              'Could not connect to the server. Make sure the backend is running.'
+            );
+
+
+          }
+
+
+          finally {
+
+
+            // Restore button
+
+            submitBtn.disabled = false;
+
+
+            submitBtn.innerHTML =
+              originalText;
+
+          }
+
         }
+      );
+
+
+
+    /* =====================================================
+       ANIMATED NETWORK BACKGROUND
+    ===================================================== */
+
+    const canvas =
+      document.getElementById(
+        'netCanvas'
+      );
+
+
+    const ctx =
+      canvas.getContext(
+        '2d'
+      );
+
+
+    let w;
+
+    let h;
+
+    let nodes;
+
+
+
+    /* Resize canvas */
+
+    function resize() {
+
+
+      const panel =
+        canvas.parentElement;
+
+
+      w =
+        canvas.width =
+          panel.offsetWidth;
+
+
+      h =
+        canvas.height =
+          panel.offsetHeight;
+
+    }
+
+
+
+    /* Create nodes */
+
+    function initNodes() {
+
+
+      nodes = [];
+
+
+      const count =
+        Math.floor(
+          (w * h) / 26000
+        );
+
+
+
+      for (
+        let i = 0;
+        i < count;
+        i++
+      ) {
+
+
+        nodes.push({
+
+          x:
+            Math.random() * w,
+
+          y:
+            Math.random() * h,
+
+          vx:
+            (Math.random() - 0.5)
+            * 0.25,
+
+          vy:
+            (Math.random() - 0.5)
+            * 0.25,
+
+          r:
+            Math.random() * 1.5 + 1,
+
+          pulse:
+            Math.random()
+            * Math.PI
+            * 2
+
+        });
+
       }
 
-      const glow = (Math.sin(n.pulse) + 1) / 2;
-      ctx.fillStyle = `rgba(255,194,51,${0.3 + glow * 0.4})`;
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-      ctx.fill();
     }
 
-    requestAnimationFrame(draw);
-  }
 
-  window.addEventListener('resize', () => { resize(); initNodes(); });
-  resize();
-  initNodes();
-  draw();
-</script>
+
+    /* Draw animation */
+
+    function draw() {
+
+
+      ctx.clearRect(
+        0,
+        0,
+        w,
+        h
+      );
+
+
+      const maxDist = 150;
+
+
+
+      for (
+        let i = 0;
+        i < nodes.length;
+        i++
+      ) {
+
+
+        const n =
+          nodes[i];
+
+
+
+        // Move nodes
+
+        n.x += n.vx;
+
+        n.y += n.vy;
+
+
+
+        // Bounce nodes
+
+        if (
+          n.x < 0 ||
+          n.x > w
+        ) {
+
+          n.vx *= -1;
+
+        }
+
+
+        if (
+          n.y < 0 ||
+          n.y > h
+        ) {
+
+          n.vy *= -1;
+
+        }
+
+
+
+        // Pulse animation
+
+        n.pulse += 0.02;
+
+
+
+        // Connect nearby nodes
+
+        for (
+          let j = i + 1;
+          j < nodes.length;
+          j++
+        ) {
+
+
+          const m =
+            nodes[j];
+
+
+          const dx =
+            n.x - m.x;
+
+
+          const dy =
+            n.y - m.y;
+
+
+          const dist =
+            Math.sqrt(
+              dx * dx +
+              dy * dy
+            );
+
+
+
+          if (
+            dist < maxDist
+          ) {
+
+
+            ctx.strokeStyle =
+              `rgba(
+                242,
+                169,
+                0,
+                ${(1 - dist / maxDist) * 0.18}
+              )`;
+
+
+            ctx.lineWidth = 1;
+
+
+            ctx.beginPath();
+
+
+            ctx.moveTo(
+              n.x,
+              n.y
+            );
+
+
+            ctx.lineTo(
+              m.x,
+              m.y
+            );
+
+
+            ctx.stroke();
+
+          }
+
+        }
+
+
+
+        // Draw node
+
+        const glow =
+          (
+            Math.sin(
+              n.pulse
+            ) + 1
+          ) / 2;
+
+
+
+        ctx.fillStyle =
+          `rgba(
+            255,
+            194,
+            51,
+            ${0.3 + glow * 0.4}
+          )`;
+
+
+        ctx.beginPath();
+
+
+        ctx.arc(
+          n.x,
+          n.y,
+          n.r,
+          0,
+          Math.PI * 2
+        );
+
+
+        ctx.fill();
+
+      }
+
+
+
+      requestAnimationFrame(
+        draw
+      );
+
+    }
+
+
+
+    /* =====================================================
+       INITIALIZE
+    ===================================================== */
+
+    window.addEventListener(
+      'resize',
+      () => {
+
+        resize();
+
+        initNodes();
+
+      }
+    );
+
+
+    resize();
+
+    initNodes();
+
+    draw();
+
+
+  </script>
+
 
 </body>
+
 </html>
